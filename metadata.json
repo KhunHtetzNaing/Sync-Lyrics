@@ -1,0 +1,5 @@
+{
+  "name": "SyncLyrics - SRT Studio",
+  "description": "A professional web-based subtitle synchronization tool. Upload video/audio, paste lyrics, and sync them in real-time with keyboard shortcuts. Supports SRT import/export.",
+  "requestFramePermissions": []
+}
