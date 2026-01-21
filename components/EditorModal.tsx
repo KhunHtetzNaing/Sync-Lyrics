@@ -45,7 +45,7 @@ export const EditorModal: React.FC<EditorModalProps> = ({
                
                {/* IMPORT BUTTON */}
                <label className="cursor-pointer">
-                  <input type="file" accept=".srt" onChange={onImportSRT} className="hidden" />
+                  <input type="file" accept=".srt,.txt,text/*" onChange={onImportSRT} className="hidden" />
                   <span className="text-xs flex items-center text-emerald-500 hover:text-emerald-400 font-medium py-1 px-3 bg-emerald-500/10 rounded-lg border border-emerald-500/20 transition-colors">
                      <Download size={12} className="mr-1.5" /> Import SRT
                   </span>

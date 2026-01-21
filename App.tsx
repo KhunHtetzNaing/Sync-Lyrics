@@ -17,7 +17,7 @@ import { Button } from './components/Button';
 import { SubtitleItem } from './components/SubtitleItem';
 import { EditorModal } from './components/EditorModal';
 import { Subtitle } from './types';
-import { parseSRT, generateSRT } from './utils/srtParser';
+import { parseSRT, generateSRT, generateId } from './utils/srtParser';
 import { formatTimeDisplay } from './utils/timeUtils';
 import { useHistory } from './hooks/useHistory';
 
@@ -98,7 +98,7 @@ const App: React.FC = () => {
       }));
     } else {
       newSubs = lines.map((line, i) => ({
-        id: subtitles[i]?.id || crypto.randomUUID(),
+        id: subtitles[i]?.id || generateId(),
         startTime: subtitles[i]?.startTime || null,
         endTime: subtitles[i]?.endTime || null,
         text: line.trim()
@@ -118,7 +118,19 @@ const App: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `synced_${mediaFile?.name.split('.')[0] || 'subtitles'}.srt`;
+
+    // Generate filename compatible with Facebook (filename.my_MM.srt)
+    let baseName = 'subtitles';
+    if (mediaFile && mediaFile.name) {
+      // Remove extension if present
+      const lastDot = mediaFile.name.lastIndexOf('.');
+      if (lastDot !== -1) {
+        baseName = mediaFile.name.substring(0, lastDot);
+      } else {
+        baseName = mediaFile.name;
+      }
+    }
+    a.download = `${baseName}.my_MM.srt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -296,10 +308,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-black text-zinc-100 font-sans overflow-hidden">
+    // Use fixed inset-0 to prevent document scroll on mobile, ensuring header stays visible
+    <div className="fixed inset-0 flex flex-col bg-black text-zinc-100 font-sans overflow-hidden">
 
       {/* HEADER */}
-      <header className="h-14 lg:h-16 shrink-0 bg-[#09090b] border-b border-white/5 px-4 flex items-center justify-between z-20">
+      <header className="h-14 lg:h-16 shrink-0 bg-[#09090b] border-b border-white/5 px-4 flex items-center justify-between z-40">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">

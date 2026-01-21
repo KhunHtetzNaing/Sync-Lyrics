@@ -1,6 +1,14 @@
 import { Subtitle } from '../types';
 import { formatTimeSRT, parseSRTTime } from './timeUtils';
 
+// Helper to generate IDs safely (works in non-secure contexts unlike crypto.randomUUID)
+export const generateId = (): string => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+
 export const parseSRT = (data: string): Subtitle[] => {
   // Normalize line endings
   const normalizedData = data.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -14,7 +22,7 @@ export const parseSRT = (data: string): Subtitle[] => {
   
   while ((match = regex.exec(normalizedData)) !== null) {
     subtitles.push({
-      id: crypto.randomUUID(),
+      id: generateId(),
       startTime: parseSRTTime(match[2]),
       endTime: parseSRTTime(match[3]),
       text: match[4].trim(),
@@ -26,7 +34,7 @@ export const parseSRT = (data: string): Subtitle[] => {
     return data.split('\n')
       .filter(line => line.trim() !== '')
       .map(line => ({
-        id: crypto.randomUUID(),
+        id: generateId(),
         startTime: null,
         endTime: null,
         text: line.trim()
